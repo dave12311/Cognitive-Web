@@ -1,13 +1,22 @@
 {
-	"name": "hello_world",
+	"name": "cognitive-node",
 	"version": "1.0.0",
-	"Description": "Node.js on Docker",
-	"author": "Dave",
-	"main": "hello.js",
+	"description": "NodeJS server for Cognitive-Web",
+	"author": "David Horvath <horvath.david987@gmail.com> (https://dave12311.com)",
+	"main": "cognitive-node.js",
 	"scripts": {
-		"start": "node hello.js"
+		"start": "node cognitive-node.js"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dave12311/Cognitive-Web"
+	},
+	"license": "MIT",
 	"dependencies": {
-		"express": "^4.16.1"
+		"express": "^4.17.1",
+		"express-session": "^1.17.0",
+		"bcrypt": "^3.0.6",
+		"pg": "^7.12.1",
+		"body-parser": "^1.19.0"
 	}
 }
