@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+    nginx:
+        build: ./nginx
+        image: cognitive:nginx
+        container_name: cognitive_nginx
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - "./nginx/html:/var/www"
+        networks:
+            - cognitive-network
+        depends_on:
+            - node
+    node:
+        build: ./node
+        image: cognitive:node
+        container_name: cognitive_node
+        networks:
+            - cognitive-network
+networks:
+    cognitive-network:
+        driver: bridge
