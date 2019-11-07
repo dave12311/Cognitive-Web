@@ -17,6 +17,28 @@ services:
         build: ./node
         image: cognitive:node
         container_name: cognitive_node
+        restart: always
+        networks:
+            - cognitive-network
+        depends_on:
+            - postgres
+    postgres:
+        image: postgres:11.5-alpine
+        container_name: cognitive_db
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+        volumes:
+            - "./postgres:/var/lib/postgresql/data"
+        networks:
+            - cognitive-network
+    adminer:
+        image: adminer:latest
+        container_name: cognitive_adminer
+        ports:
+            - "8080:8080"
+        depends_on:
+            - postgres
         networks:
             - cognitive-network
 networks:

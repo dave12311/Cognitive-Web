@@ -81,9 +81,9 @@ function start(){
 }
 
 function keyboardHandler(e){
+    stopTime = window.performance.now();
     if(keyboardActive == true){
         if(e.key == "ArrowRight" || "ArrowLeft"){
-            stopTime = window.performance.now();
             clock.stop();
             clear();
             drawPlus();
