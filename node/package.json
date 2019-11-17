@@ -3,10 +3,7 @@
 	"version": "1.0.0",
 	"description": "NodeJS server for Cognitive-Web",
 	"author": "David Horvath <horvath.david987@gmail.com> (https://dave12311.com)",
-	"main": "cognitive-node.js",
-	"scripts": {
-		"start": "node cognitive-node.js"
-	},
+	"main": "src/cognitive-node.js",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/dave12311/Cognitive-Web"

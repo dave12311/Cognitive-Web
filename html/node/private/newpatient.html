@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+    <head>
+        <title>Add new patient</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="selectbox.css">
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                padding: 50px;
+                background-color: #3498DB;
+                overflow-y: scroll;
+            }
+
+            .container {
+                position: absolute;
+                top: 5%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 500px;
+                background-color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            h1 {
+                width: 70%;
+                color: #777;
+                font-size: 32px;
+                margin: 28px auto;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            h2 {
+                color: #444;
+                font-size: 28px;
+                margin: 28px auto;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            h3 {
+                color: #444;
+                font-size: 24px;
+                margin: 28px auto;
+                margin-bottom: 20px;
+                margin-left: 20px;
+                text-align: left;
+            }
+
+            form {
+                text-align: center;
+            }
+
+            input{
+                padding: 12px 0;
+			    margin-bottom: 10px;
+			    border-radius: 3px;
+			    border: 2px solid transparent;
+			    text-align: center;
+			    width: 90%;
+			    font-size: 16px;
+                transition: border .2s, background-color .2s;
+            }
+
+            input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+                -webkit-appearance: none; 
+                margin: 0; 
+            }
+
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
+
+            form .field {
+			    background-color: #ECF0F1;
+		    }
+
+		    form .field:focus {
+			    border: 2px solid #3498DB;
+		    }
+
+		    form .btn1 {
+                margin-top: 80px;
+			    background-color: #3498DB;
+			    color: #fff;
+			    line-height: 25px;
+			    cursor: pointer;
+		    }
+
+		    form .btn1:hover, form .btn1:active {
+			    background-color: #1F78B4;
+			    border: 2px solid #1F78B4;
+		    }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Add new patient</h1>
+            <form action="/api?action=newpatient" method="POST">
+                <h2>Patient ID: #PATIENTID</h2>
+                <h3>Group:</h3>
+                <div name="group" class="select">
+                    <select>
+                        <option value="sch">SCH</option>
+                        <option value="ctrl">Control</option>
+                        <option value="null">Placeholder</option>
+                    </select>
+                    <div class="select__arrow"></div>
+                </div>
+                <h3>Age:</h3>
+                <input name="age" type="number" placeholder="[years]" class="field">
+                <h3>Height:</h3>
+                <input name="height" type="number" placeholder="[cm]" class="field">
+                <h3>Sex:</h3>
+                <div name="sex" class="select">
+                    <select>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                    <div class="select__arrow"></div>
+                </div>
+                <h3>Marital status:</h3>
+                <div name="marital_status" class="select" >
+                    <select>
+                        <option value="single">Single</option>
+                        <option value="relationship">In a relationship</option>
+                        <option value="married">Married</option>
+                        <option value="cohabiting">Cohabiting</option>
+                        <option value="divorced">Divorced</option>
+                        <option value="separated">Separated</option>
+                        <option value="widowed">Widowed</option>
+                    </select>
+                    <div class="select__arrow"></div>
+                </div>
+                <h3>Employment status:</h3>
+                <div name="employment_status" class="select" >
+                    <select>
+                        <option value="full_time">Full time</option>
+                        <option value="part_time">Part time</option>
+                        <option value="student">Student</option>
+                        <option value="retired">Retired</option>
+                        <option value="house">Housewife/Househusband</option>
+                        <option value="seeking">Seeking</option>
+                        <option value="unemployed">Unemployed</option>
+                        <option value="percentuated">Percentuated</option>
+                    </select>
+                    <div class="select__arrow"></div>
+                </div>
+                <h3>Financial status:</h3>
+                <input name="financial_status" type="number" placeholder="[1-5] (5 being the best)" class="field">
+                <h3>Date of first diagnosis:</h3>
+                <input name="first_diag" type="date" class="field">
+                <h3>Number of hospitalizations:</h3>
+                <input name="hosp_no" type="number" placeholder="[number]" class="field">
+                <h3>Alcohol consumption:</h3>
+                <div name="alcohol_now" class="select" >
+                    <select>
+                        <option value="none">None</option>
+                        <option value="little">Little</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="lot">A lot</option>
+                    </select>
+                    <div class="select__arrow"></div>
+                </div>
+                <h3>Alcohol consumption still ongoing?</h3>
+                <div name="alcohol_ongoing" class="select" >
+                    <select>
+                        <option value=1>True</option>
+                        <option value=0>False</option>
+                    </select>
+                    <div class="select__arrow"></div>
+                </div>
+                <h3>NART:</h3>
+                <input name="NART" type="number" placeholder="[number]" class="field">
+                <h3>PANSS Positive:</h3>
+                <input name="PANSS_POS" type="number" placeholder="[number]" class="field">
+                <h3>PANSS Negative:</h3>
+                <input name="PANSS_NEG" type="number" placeholder="[number]" class="field">
+                <h3>CGI-S:</h3>
+                <input name="CGI_S" type="number" placeholder="[number]" class="field">
+                <h3>CGI-I:</h3>
+                <input name="CGI_I" type="number" placeholder="[number]" class="field">
+
+                <input type="submit" value="Add new patient" class="btn1">
+            </form>
+        </div>
+    </body>
+</html>

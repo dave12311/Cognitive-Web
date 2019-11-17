@@ -1,0 +1,42 @@
+.select {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.select select {
+  display: inline-block;
+  width: 90%;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 10px 15px;
+  font-size: 16px;
+	transition: border .2s, background-color .2s;
+  background: #ECF0F1;
+  color: #7b7b7b;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.select select:hover, .select select:focus {
+  border: 2px solid #3498DB;
+}
+.select__arrow {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  border-style: solid;
+  border-width: 8px 5px 0 5px;
+  border-color: #7b7b7b transparent transparent transparent;
+}
+.select select:hover ~ .select__arrow,
+.select select:focus ~ .select__arrow {
+  border-top-color: #000;
+}
+.select select:disabled ~ .select__arrow {
+  border-top-color: #ccc;
+}

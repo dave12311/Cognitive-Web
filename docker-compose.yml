@@ -8,7 +8,7 @@ services:
             - "80:80"
             - "443:443"
         volumes:
-            - "./nginx/html:/var/www"
+            - "./html/nginx:/var/www"
         networks:
             - cognitive-network
         depends_on:
@@ -22,6 +22,9 @@ services:
             - cognitive-network
         depends_on:
             - postgres
+        volumes:
+            - "./html/node:/usr/src/cognitive-node/html"
+            - "./node/src:/usr/src/cognitive-node/src"
     postgres:
         image: postgres:11.5-alpine
         container_name: cognitive_db

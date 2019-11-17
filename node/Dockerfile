@@ -1,13 +1,14 @@
 FROM node:12.13.0-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/cognitive-node
 
 COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+RUN npm install -g nodemon
 
 EXPOSE 8080
 
-CMD [ "node", "cognitive-node.js" ]
+ENTRYPOINT []
+CMD [ "nodemon" ]

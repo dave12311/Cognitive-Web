@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+    <head>
+        <title>Login</title>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                padding: 50px;
+                background-color: #3498DB;
+            }
+
+            .container {
+                position: absolute;
+                top: 30%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                width: 300px;
+                background-color: #fff;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            h1 {
+                width: 70%;
+                color: #777;
+                font-size: 32px;
+                margin: 28px auto;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            form {
+                text-align: center;
+            }
+
+            input{
+                padding: 12px 0;
+			    margin-bottom: 10px;
+			    border-radius: 3px;
+			    border: 2px solid transparent;
+			    text-align: center;
+			    width: 90%;
+			    font-size: 16px;
+			    transition: border .2s, background-color .2s;
+            }
+
+            form .field {
+			    background-color: #ECF0F1;
+		    }
+
+		    form .field:focus {
+			    border: 2px solid #3498DB;
+		    }
+
+		    form .btn1 {
+			    background-color: #3498DB;
+			    color: #fff;
+			    line-height: 25px;
+			    cursor: pointer;
+		    }
+
+            form .btn2 {
+                margin-top: 20px;
+			    background-color: #777;
+			    color: #fff;
+			    line-height: 25px;
+			    cursor: pointer;
+		    }
+
+		    form .btn1:hover, form .btn1:active {
+			    background-color: #1F78B4;
+			    border: 2px solid #1F78B4;
+		    }
+
+            form .btn2:hover, form .btn2:active {
+			    background-color: #555;
+			    border: 2px solid #555;
+		    }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Dashboard</h1>
+            <form action="/users/newpatient" method="GET">
+                <input type="submit" value="Add new patient" class="btn1">
+            </form>
+            <form action="/users/patient" method="GET">
+                <input type="submit" value="Select existing patient" class="btn1">
+            </form>
+            <form action="/api?action=logout" method="POST">
+                <input type="submit" value="Log out" class="btn2">
+            </form>
+        </div>
+    </body>
+</html>
