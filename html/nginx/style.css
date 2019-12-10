@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #3498DB;
+}
+
+.container {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px 40px;
+    text-align: center;
+    width: auto;
+}
+
+h1 {
+    color: #777;
+    font-size: 32px;
+    margin: auto 70px;
+}
+
+h2 {
+    color: #444;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    font-size: 40px;
+}
+
+h3 {
+    color: #444;
+    font-size: 24px;
+    margin: 28px auto 20px 28px;
+    text-align: left;
+}
+
+form {
+    text-align: center;
+}
+
+input{
+    padding: 12px 0;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    border: 2px solid transparent;
+    width: 90%;
+    font-size: 16px;
+    transition: border .2s, background-color .2s;
+    text-align: center;
+}
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+form .field {
+    background-color: #ECF0F1;
+    margin: 10px auto;
+    display: block;
+    block-size: 20%;
+}
+
+form .field:focus {
+    border: 2px solid #3498DB;
+}
+
+form .btn1 {
+    background-color: #3498DB;
+    color: #fff;
+    line-height: 25px;
+    cursor: pointer;
+}
+
+form .btn2 {
+    margin-top: 20px;
+    background-color: #777;
+    color: #fff;
+    line-height: 25px;
+    cursor: pointer;
+}
+
+form .btn1:hover, form .btn1:active {
+    background-color: #1F78B4;
+    border: 2px solid #1F78B4;
+}
+
+form .btn2:hover, form .btn2:active {
+    background-color: #555;
+    border: 2px solid #555;
+}

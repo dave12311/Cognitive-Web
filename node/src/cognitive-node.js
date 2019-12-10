@@ -27,7 +27,8 @@ app.use(session({
 	}),
 	secret: "keyboard cat",
 	rolling: true,
-	resave: false,
+	saveUninitialized: false,
+	resave: true,
 	cookie: { maxAge: 3 * 60 * 1000 }
 }));
 
@@ -73,8 +74,7 @@ app.post('/api', function(req, response){
 					});
 				});
 			}else{
-				//TODO: Not enough data html
-				response.send("Not enough stuff to log in");
+				response.sendFile('/usr/src/cognitive-node/html/loginerror.html');
 			}
 			break;
 		case "logout":
@@ -93,7 +93,7 @@ app.post('/api', function(req, response){
 	}
 });
 
-app.use(function(req, res, next){
+app.use(function(req, res){
 	res.status = 404;
 	res.sendFile('/usr/src/cognitive-node/html/404.html');
 });
