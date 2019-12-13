@@ -55,27 +55,23 @@ app.post('/api/login', function(req, response){
 	var password = req.body.password;
 
 	if(username && password){
-		pool.connect(function(err, client){
+		var query = format('SELECT password FROM nginx.login WHERE username = %L', username);
+		pool.query(query, function(err, result){
 			if(err) throw new Error(err);
-			var query = format('SELECT password FROM nginx.login WHERE username = %L', username);
-			client.query(query, function(err, result){
-				client.release();
-				if(err) throw new Error(err);
-				if(result.rowCount === 1){
-					bcrypt.compare(password, result.rows[0].password, function(err, res){
-						if(err) throw new Error(err);
-						if(res === true){
-							req.session.loggedin = true;
-							req.session.username = username;
-							response.sendStatus(200);
-						}else{
-							response.sendStatus(403);
-						}
-					});
-				}else{
-					response.sendStatus(403);
-				}
-			});
+			if(result.rowCount === 1){
+				bcrypt.compare(password, result.rows[0].password, function(err, res){
+					if(err) throw new Error(err);
+					if(res === true){
+						req.session.loggedin = true;
+						req.session.username = username;
+						response.sendStatus(200);
+					}else{
+						response.sendStatus(403);
+					}
+				});
+			}else{
+				response.sendStatus(403);
+			}
 		});
 	}else{
 		response.sendStatus(403);
@@ -104,44 +100,37 @@ app.get('/api/checklogin', function(req, res){
 
 app.post('/api/newpatient', function(req, res){
 	if(req.session.loggedin === true){
-		pool.connect(function(err, client){
+		var arr = [];
+
+		for(var val in req.body){
+			if(req.body[val]){arr.push(req.body[val])}else{arr.push(null)}
+		}
+
+		var query = 'INSERT INTO patient_data.patients' + 
+		'(patient_group,age,height,sex,marital_status,employment_status,financial_status,first_diag,hosp_no,alcohol,nart,panss_pos,panss_neg,cgi_s,cgi_i) ' +
+		'VALUES((SELECT id FROM enum.patient_groups WHERE name=$1),$2,$3,$4,' +
+		'(SELECT id FROM enum.marital_status WHERE name=$5),' +
+		'(SELECT id FROM enum.employment_status WHERE name=$6),' +
+		'$7,$8,$9,' +
+		'(SELECT id FROM enum.amounts WHERE name=$10),' +
+		'$11,$12,$13,$14,$15' +
+		') RETURNING id';
+
+		pool.query(query, arr, function(err, result){
 			if(err) throw new Error(err);
-
-			var arr = [];
-
-			for(var val in req.body){
-				if(req.body[val]){arr.push(req.body[val])}else{arr.push(null)}
+			var sql_resp;
+			if(result.rowCount === 1){
+				sql_resp = {
+					status: 'OK',
+					id: result.rows[0].id
+				};
+			}else{
+				sql_resp = {
+					status: 'ERR',
+					id: null
+				};
 			}
-
-			console.log(arr);
-
-			var query = 'INSERT INTO patient_data.patients' + 
-			'(patient_group,age,height,sex,marital_status,employment_status,financial_status,first_diag,hosp_no,alcohol,nart,panss_pos,panss_neg,cgi_s,cgi_i) ' +
-			'VALUES((SELECT id FROM enum.patient_groups WHERE name=$1),$2,$3,$4,' +
-			'(SELECT id FROM enum.marital_status WHERE name=$5),' +
-			'(SELECT id FROM enum.employment_status WHERE name=$6),' +
-			'$7,$8,$9,' +
-			'(SELECT id FROM enum.amounts WHERE name=$10),' +
-			'$11,$12,$13,$14,$15' +
-			') RETURNING id';
-
-			client.query(query, arr, function(err, result){
-				client.release();
-				if(err) throw new Error(err);
-				var sql_resp;
-				if(result.rowCount === 1){
-					sql_resp = {
-						status: 'OK',
-						id: result.rows[0].id
-					};
-				}else{
-					sql_resp = {
-						status: 'ERR',
-						id: null
-					};
-				}
-				res.send(JSON.stringify(sql_resp));
-			});
+			res.send(JSON.stringify(sql_resp));
 		});
 	}else{
 		res.sendStatus(403);
@@ -150,17 +139,14 @@ app.post('/api/newpatient', function(req, res){
 
 app.get('/api/checkpatient', function(req, res){
 	if(req.session.loggedin === true){
-		pool.connect(function(err, client){
+		var query = format('SELECT EXISTS(SELECT 1 FROM patient_data.patients WHERE id=%L)', req.query.patientID);
+		pool.query(query, function(err, result){
 			if(err) throw new Error(err);
-			var query = format('SELECT EXISTS(SELECT 1 FROM patient_data.patients WHERE id=%L)', req.query.patientID);
-			client.query(query, function(err, result){
-				if(err) throw new Error(err);
-				if(result.rows[0].exists === true){
-					res.sendStatus(200);
-				}else{
-					res.sendStatus(404);
-				}
-			});
+			if(result.rows[0].exists === true){
+				res.sendStatus(200);
+			}else{
+				res.sendStatus(404);
+			}
 		});
 	}else{
 		res.sendStatus(403);
