@@ -3,15 +3,21 @@
         <title>Bejelentkezés</title>
 		<meta charset="UTF-8">
         <link rel="stylesheet" href="style.css">
+
+        <script src="alertifyjs/alertify.min.js"></script>
+        <link rel="stylesheet" href="alertifyjs/css/alertify.min.css"/>
+        <link rel="stylesheet" href="alertifyjs/css/themes/default.min.css"/>
+
+        <script src="login.js"></script>
     </head>
 
-    <body>
+    <body onload="load()">
         <div class="container">
             <h1>Bejelentkezés</h1>
-            <form action="/api?action=login" method="POST" autocomplete="off">
-                <input name="username" type="text" placeholder="felhasználónév" class="field" autofocus>
-                <input name="password" type="password" placeholder="jelszó" class="field">
-                <input type="submit" value="bejelentkezés" class="btn1">
+            <form id="login" autocomplete="off">
+                <input id="username" type="text" placeholder="felhasználónév" class="field" autofocus>
+                <input id="password" type="password" placeholder="jelszó" class="field">
+                <input type="button" onclick="login()" value="bejelentkezés" class="btn1">
             </form>
         </div>
     </body>

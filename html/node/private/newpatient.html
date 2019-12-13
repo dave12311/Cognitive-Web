@@ -2,8 +2,14 @@
     <head>
         <title>Új beteg</title>
         <meta charset="UTF-8">
+
+        <script src="https://dave12311.com/alertifyjs/alertify.min.js"></script>
+        <link rel="stylesheet" href="https://dave12311.com/alertifyjs/css/alertify.min.css"/>
+        <link rel="stylesheet" href="https://dave12311.com/alertifyjs/css/themes/default.min.css"/>
+
         <link rel="stylesheet" href="selectbox.css">
         <link rel="stylesheet" href="../style.css">
+        <script src="newpatient.js"></script>
         <style>
             .container {
                 top: 5%;
@@ -20,30 +26,30 @@
     <body>
         <div class="container">
             <h1>Új beteg hozzáadása</h1>
-            <form action="/api?action=newpatient" method="POST">
+            <form onsubmit="submitPatient();return false">
                 <h3>Csoport:</h3>
-                <div name="group" class="select">
-                    <select>
+                <div class="select">
+                    <select id="group">
                         <option value="sch">SCH</option>
                         <option value="ctrl">Kontroll</option>
                     </select>
                     <div class="select__arrow"></div>
                 </div>
                 <h3>Kor:</h3>
-                <input name="age" type="number" min="1" max="150" step="1" placeholder="[év]" class="field" required>
+                <input id="age" type="number" min="1" max="150" step="1" placeholder="[év]" class="field" required>
                 <h3>Magasság:</h3>
-                <input name="height" min="1" max="300" step="1" type="number" placeholder="[cm]" class="field" required>
+                <input id="height" min="1" max="300" step="1" type="number" placeholder="[cm]" class="field" required>
                 <h3>Nem:</h3>
-                <div name="sex" class="select">
-                    <select>
-                        <option value="male">Férfi</option>
-                        <option value="female">Nő</option>
+                <div class="select">
+                    <select id="sex">
+                        <option value="M">Férfi</option>
+                        <option value="F">Nő</option>
                     </select>
                     <div class="select__arrow"></div>
                 </div>
                 <h3>Családi állapot:</h3>
-                <div name="marital_status" class="select">
-                    <select>
+                <div class="select">
+                    <select id="marital_status">
                         <option value="single">Egyedülálló</option>
                         <option value="relationship">Párkapcsolatban, külön élnek</option>
                         <option value="married">Házas</option>
@@ -55,8 +61,8 @@
                     <div class="select__arrow"></div>
                 </div>
                 <h3>Foglalkoztatási státusz:</h3>
-                <div name="employment_status" class="select" >
-                    <select>
+                <div class="select" >
+                    <select id="employment_status">
                         <option value="full_time">Teljes munkaidős állás</option>
                         <option value="part_time">Részmunkaidős állás</option>
                         <option value="student">Tanuló</option>
@@ -68,31 +74,31 @@
                     <div class="select__arrow"></div>
                 </div>
                 <h3>Anyagi-jóléti státusz:</h3>
-                <input name="financial_status" type="number" min="1" max="5" step="1" placeholder="[1-5] (1: szegény; 5: gazdag)" class="field" required>
+                <input id="financial_status" type="number" min="1" max="5" step="1" placeholder="[1-5] (1: szegény; 5: gazdag)" class="field" required>
                 <h3>Diagnózis felállításának éve:</h3>
-                <input name="first_diag" type="number" min="1900" max="2100" step="1" placeholder="[év]" class="field" required>
+                <input id="first_diag" type="number" min="1900" max="2100" step="1" placeholder="[év]" class="field" required>
                 <h3>Kórházi kezelések száma:</h3>
-                <input name="hosp_no" type="number" min="0" max="100" step="1" placeholder="[szám]" class="field" required>
+                <input id="hosp_no" type="number" min="0" max="100" step="1" placeholder="[szám]" class="field" required>
                 <h3>Alkoholfogyasztás:</h3>
-                <div name="alcohol" class="select" >
-                    <select>
+                <div class="select" >
+                    <select id="alcohol">
                         <option value="none">Egyáltalán nem</option>
-                        <option value="little">Havi gyakorisággal</option>
-                        <option value="moderate">Heti gyakorisággal</option>
-                        <option value="lot">Napi gyakorisággal</option>
+                        <option value="monthly">Havi gyakorisággal</option>
+                        <option value="weekly">Heti gyakorisággal</option>
+                        <option value="daily">Napi gyakorisággal</option>
                     </select>
                     <div class="select__arrow"></div>
                 </div>
                 <h3>NART:</h3>
-                <input name="NART" type="number" min="0" max="50" step="1" placeholder="[érték]" class="field">
+                <input id="NART" type="number" min="0" max="50" step="1" placeholder="[érték]" class="field">
                 <h3>PANSS Positive:</h3>
-                <input name="PANSS_POS" type="number" min="7" max="49" step="1" placeholder="[érték]" class="field">
+                <input id="PANSS_POS" type="number" min="7" max="49" step="1" placeholder="[érték]" class="field">
                 <h3>PANSS Negative:</h3>
-                <input name="PANSS_NEG" type="number" min="7" max="49" step="1" placeholder="[érték]" class="field">
+                <input id="PANSS_NEG" type="number" min="7" max="49" step="1" placeholder="[érték]" class="field">
                 <h3>CGI-S:</h3>
-                <input name="CGI_S" type="number" min="1" max="7" step="1" placeholder="[érték]" class="field">
+                <input id="CGI_S" type="number" min="1" max="7" step="1" placeholder="[érték]" class="field">
                 <h3>CGI-I:</h3>
-                <input name="CGI_I" type="number" min="1" max="7" step="1" placeholder="[érték]" class="field">
+                <input id="CGI_I" type="number" min="1" max="7" step="1" placeholder="[érték]" class="field">
 
                 <input type="submit" value="Beteg hozzáadása" class="btn1">
             </form>
