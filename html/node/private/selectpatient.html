@@ -7,5 +7,119 @@
         <link rel="stylesheet" href="https://dave12311.com/alertifyjs/css/themes/default.min.css"/>
 
         <link rel="stylesheet" href="../style.css">
+        <script src="selectpatient.js"></script>
+
+        <style>
+            .container {
+                top: 3%;
+                transform: translateX(-50%);
+            }
+
+            h1 {
+                margin-bottom: 20px;
+            }
+
+            .tablediv {
+                float: left;
+                margin-right: 50px;
+            }
+
+            .buttondiv {
+                float: right;
+                width: 400px;
+            }
+
+            form .btn1, form .btn2 {
+                width: 350px;
+            }
+
+            form .btn1.spaced {
+                margin-bottom: 50px;
+            }
+
+            form {
+                transform: translateY(50%)
+            }
+        </style>
     </head>
+
+    <body onload="load();">
+        <div class=container>
+            <h1 id="id">Beteg ID: </h1>
+            <div class=tablediv>
+                <table>
+                    <tr>
+                        <td>Csoport</td>
+                        <td id="group"></td>
+                    </tr>
+                    <tr>
+                        <td>Kor</td>
+                        <td id="age"></td>
+                    </tr>
+                    <tr>
+                        <td>Magasság</td>
+                        <td id="height"></td>
+                    </tr>
+                    <tr>
+                        <td>Nem</td>
+                        <td id="sex"></td>
+                    </tr>
+                    <tr>
+                        <td>Családi állapot</td>
+                        <td id="marital_status"></td>
+                    </tr>
+                    <tr>
+                        <td>Foglalkoztatási státusz</td>
+                        <td id="employment_status"></td>
+                    </tr>
+                    <tr>
+                        <td>Anyagi-jóléti státusz</td>
+                        <td id="financial_status"></td>
+                    </tr>
+                    <tr>
+                        <td>Diagnózis felállításának éve</td>
+                        <td id="first_diag"></td>
+                    </tr>
+                    <tr>
+                        <td>Kórházi kezelések száma</td>
+                        <td id="hosp_no"></td>
+                    </tr>
+                    <tr>
+                        <td>Alkoholfogyasztás</td>
+                        <td id="alcohol"></td>
+                    </tr>
+                    <tr>
+                        <td>NART</td>
+                        <td id="NART"></td>
+                    </tr>
+                    <tr>
+                        <td>PANSS Positive</td>
+                        <td id="PANSS_POS"></td>
+                    </tr>
+                    <tr>
+                        <td>PANSS Negative</td>
+                        <td id="PANSS_NEG"></td>
+                    </tr>
+                    <tr>
+                        <td>CGI-S</td>
+                        <td id="CGI_S"></td>
+                    </tr>
+                    <tr>
+                        <td>CGI-I</td>
+                        <td id="CGI_I"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class=buttondiv>
+                <form>
+                    <input type="button" value="Adatok módosítása" class="btn1 spaced" onclick="modify();">
+                    <input type="button" value="Új session létrehozása" class="btn1">
+                    <input type="button" value="Utolsó session folytatása" class="btn1 spaced">
+
+                    <input type="button" value="Vissza" class="btn2" onclick="back();">
+                </form>
+            </div>
+        </div>
+    </body>
 </html>

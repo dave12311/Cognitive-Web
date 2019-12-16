@@ -4,7 +4,6 @@ const pgSession = require('connect-pg-simple')(session);
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const pg = require('pg');
-const format = require('pg-format');
 
 var app = express();
 
@@ -25,7 +24,6 @@ function auth(req, res, next){
 	}else{
 		res.status = 403;
 		res.redirect('/');
-		console.log("Redirect");
 	}
 }
 
@@ -41,7 +39,7 @@ app.use(session({
 	saveUninitialized: false,
 	resave: true,
 	cookie: {
-		maxAge: 30 * 60 * 1000,
+		maxAge: 5 * 60 * 60 * 1000,
 		secure: true,
 		sameSite: true
 	}
@@ -55,24 +53,35 @@ app.post('/api/login', function(req, response){
 	var password = req.body.password;
 
 	if(username && password){
-		var query = format('SELECT password FROM nginx.login WHERE username = %L', username);
-		pool.query(query, function(err, result){
-			if(err) throw new Error(err);
+		var query = 'SELECT password FROM nginx.login WHERE username = $1';
+		pool
+		.query(query, [username])
+		.then(result => {
 			if(result.rowCount === 1){
-				bcrypt.compare(password, result.rows[0].password, function(err, res){
-					if(err) throw new Error(err);
+				return bcrypt
+				.compare(password, result.rows[0].password)
+				.then(res => {
 					if(res === true){
 						req.session.loggedin = true;
 						req.session.username = username;
 						response.sendStatus(200);
+						console.log('User ' + username + ' logged in.');
 					}else{
 						response.sendStatus(403);
 					}
-				});
+				})
+				.catch(err => {
+					console.log(err.stack);
+					response.sendStatus(500);
+				})
 			}else{
 				response.sendStatus(403);
 			}
-		});
+		})
+		.catch(err => {
+			console.log(err.stack);
+			response.sendStatus(500);
+		})
 	}else{
 		response.sendStatus(403);
 	}
@@ -80,6 +89,7 @@ app.post('/api/login', function(req, response){
 
 app.post('/api/logout', function(req, res){
 	if(req.session.loggedin === true){
+		console.log('User ' + req.session.username + ' logged out.');
 		req.session.destroy(function(err){
 			if(err) throw new Error(err);
 			res.redirect('/');
@@ -116,8 +126,9 @@ app.post('/api/newpatient', function(req, res){
 		'$11,$12,$13,$14,$15' +
 		') RETURNING id';
 
-		pool.query(query, arr, function(err, result){
-			if(err) throw new Error(err);
+		pool
+		.query(query, arr)
+		.then(result => {
 			var sql_resp;
 			if(result.rowCount === 1){
 				sql_resp = {
@@ -131,7 +142,15 @@ app.post('/api/newpatient', function(req, res){
 				};
 			}
 			res.send(JSON.stringify(sql_resp));
-		});
+		})
+		.catch(err => {
+			console.log(err.stack);
+			var sql_resp = {
+				status: 'ERR',
+				id: null
+			};
+			res.send(JSON.stringify(sql_resp));
+		})
 	}else{
 		res.sendStatus(403);
 	}
@@ -139,15 +158,121 @@ app.post('/api/newpatient', function(req, res){
 
 app.get('/api/checkpatient', function(req, res){
 	if(req.session.loggedin === true){
-		var query = format('SELECT EXISTS(SELECT 1 FROM patient_data.patients WHERE id=%L)', req.query.patientID);
-		pool.query(query, function(err, result){
-			if(err) throw new Error(err);
-			if(result.rows[0].exists === true){
-				res.sendStatus(200);
-			}else{
-				res.sendStatus(404);
+		if(Number.isInteger(Number.parseInt(req.query.patientID, 10)) && req.query.patientID > 0){
+			var query = 'SELECT EXISTS(SELECT 1 FROM patient_data.patients WHERE id=$1)';
+			pool
+			.query(query, [req.query.patientID])
+			.then(result => {
+				if(result.rows[0].exists === true){
+					res.sendStatus(200);
+				}else{
+					res.sendStatus(404);
+				}
+			})
+			.catch(err => {
+				console.log(err.stack);
+				res.sendStatus(500);
+			})
+		}else{
+			res.sendStatus(404);
+		}
+	}else{
+		res.sendStatus(403);
+	}
+});
+
+app.get('/api/patient', function(req, res){
+	if(req.session.loggedin === true){
+		if(Number.isInteger(Number.parseInt(req.query.patientID, 10)) && req.query.patientID > 0){
+			pool
+			.connect()
+			.then(client => {
+				var query = 'SELECT * FROM patient_data.patients WHERE id=$1';
+				return client
+					.query(query, [req.query.patientID])
+					.then(result => {
+						var subquery = '(SELECT name FROM enum.patient_groups WHERE id=$1)' +
+						'UNION ALL (SELECT name FROM enum.marital_status WHERE id=$2)' +
+						'UNION ALL (SELECT name FROM enum.employment_status WHERE id=$3)' +
+						'UNION ALL (SELECT name FROM enum.amounts WHERE id=$4)';
+						var params = [
+							result.rows[0].patient_group,
+							result.rows[0].marital_status,
+							result.rows[0].employment_status,
+							result.rows[0].alcohol
+						];
+						return client
+							.query(subquery, params)
+							.then(subresult => {
+								client.release();
+
+								var data = result.rows[0];
+								data.patient_group = subresult.rows[0].name;
+								data.marital_status = subresult.rows[1].name;
+								data.employment_status = subresult.rows[2].name;
+								data.alcohol = subresult.rows[3].name;
+
+								res.send(JSON.stringify(data));
+							})
+							.catch(err => {
+								client.release();
+								console.log(err.stack);
+								res.sendStatus(404);
+							})
+					})
+					.catch(err => {
+						client.release();
+						console.log(err.stack);
+						res.sendStatus(404);
+					})
+			})
+			.catch(err => {
+				console.log(err.stack);
+				res.sendStatus(500);
+			})
+		}else{
+			res.sendStatus(404);
+		}
+	}else{
+		res.sendStatus(403);
+	}
+});
+
+app.post('/api/patient', function(req, res){
+	if(req.session.loggedin === true){
+		if(Number.isInteger(Number.parseInt(req.body.id, 10)) && req.body.id > 0){
+			var arr = [];
+
+			for(var val in req.body){
+				if(req.body[val]){arr.push(req.body[val])}else{arr.push(null)}
 			}
-		});
+
+			var query = 'UPDATE patient_data.patients SET ' +
+			'patient_group=(SELECT id FROM enum.patient_groups WHERE name=$1),' +
+			'age=$2,height=$3,sex=$4,' +
+			'marital_status=(SELECT id FROM enum.marital_status WHERE name=$5),' +
+			'employment_status=(SELECT id FROM enum.employment_status WHERE name=$6),' +
+			'financial_status=$7,first_diag=$8,hosp_no=$9,' +
+			'alcohol=(SELECT id FROM enum.amounts WHERE name=$10),' +
+			'nart=$11,panss_pos=$12,panss_neg=$13,cgi_s=$14,cgi_i=$15 ' +
+			'WHERE id=$16';
+
+			pool
+			.query(query, arr)
+			.then(result => {
+				if(result.rowCount === 1){
+					res.sendStatus(200);
+				}else{
+					res.sendStatus(404);
+				}
+			})
+			.catch(err => {
+				console.log(err.stack);
+				res.sendStatus(500);
+			})
+		}else{
+			res.sendStatus(404);
+		}
 	}else{
 		res.sendStatus(403);
 	}
